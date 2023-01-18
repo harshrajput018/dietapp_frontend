@@ -10,21 +10,36 @@ export default function Card(props) {
     const [meals, set] = useState([])
     const [exercises, setex] = useState([])
     const [d, dc] = useState();
-    const [dex,dcex] = useState();
+    const [dex, dcex] = useState();
+
 
     const [date, cd] = useState();
 
     const [dates, pushDate] = useState([]);
     const [datex, pushDatex] = useState([]);
 
-    const [re, rerender] = useState(0);
+    const [md, setmd] = useState([]);
 
-    const [sm, togglesm] = useState(false)
 
-   
-    
+
+    useEffect(() => {
+        if (dates.length == 1) {
+            setmd(prev => {
+                let temp = [];
+                meals.map(elem => {
+                    temp.push(elem.allmeals);
+                })
+
+                return temp;
+            })
+        }
+
+    }, [dates])
+
 
     console.log(props.elem)
+    console.log(dates)
+    
 
     useEffect(() => {
         if (torf) {
@@ -76,10 +91,10 @@ export default function Card(props) {
             return temp;
         })
     }
-    
+
     function handlesubmit(e) {
 
-        
+
 
         e.preventDefault()
         fetch('http://localhost:8000/addmeals', {
@@ -87,7 +102,7 @@ export default function Card(props) {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ data: input, userid: props.elem._id, mealdate: d })
+            body: JSON.stringify({ data: input, userid: props.elem._id, mealdate: d, dates: dates })
         }).then(data => data.json()).then(data => {
             if (data.success)
                 fetchdata();
@@ -104,11 +119,12 @@ export default function Card(props) {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ data: inputex, userid: props.elem._id, mealdate: dex })}).then(data=>data.json()).then(data=>{
-                if (data.success)
+            body: JSON.stringify({ data: inputex, userid: props.elem._id, mealdate: dex })
+        }).then(data => data.json()).then(data => {
+            if (data.success)
                 fetchdataex();
-            })
-        
+        })
+
     }
 
 
@@ -119,7 +135,7 @@ export default function Card(props) {
         fetchdataex();
     }, [])
 
-    
+
 
 
     useEffect(() => {
@@ -215,16 +231,10 @@ export default function Card(props) {
                     <div >
 
 
-                        <button className="btn btn-secondary" onClick={fetchdata} >
-                            <div style={{ display: sm ? 'none' : 'block' }} onClick={() => {
-                                togglesm(prev => { if (!prev) return true })
-                            }} id="sm">Show All Meals</div><div style={{ display: sm ? 'block' : 'none' }} onClick={() => {
-                                togglesm(prev => { if (prev) return false })
-                            }} id="hm">Hide All Meals</div>
-                        </button>
-                        <button className="btn btn-primary">copy</button>
 
-                        <div style={{ display: sm ? 'block' : 'none', maxHeight: '250px', width: '100%', overflow: 'auto', paddingTop: '1.5rem' }} >
+
+
+                        <div style={{ maxHeight: '250px', width: '100%', overflow: 'auto', paddingTop: '1.5rem' }} >
 
 
 
@@ -256,21 +266,65 @@ export default function Card(props) {
 
                         </div>
 
-                        <div>Same plan for other dates ?
-                        select dates
-                        <input size={5} type="date" onChange={(e)=>cd(prev=>{
-                            return e.target.value;
-                        })} />
+                        <div><br />
+                            Same plan for other dates ?
+                            select dates
 
-                        <button onClick={()=>pushDate(prev=>{
-                            return [...prev,date]
-                        })}>push this date</button>
-                        <div style={{background:'black'}}>
-                        {console.log(dates[0])}
+                            <input size={5} type="date" onChange={(e) => cd(prev => {
+                                return e.target.value;
+                            })} />
+
+                            <button onClick={() => pushDate(prev => {
+                                return [...prev, date]
+                            })}>push this date</button>
+
+
+
+                            <div style={{ background: 'black' }}>
+                                {
+                                    dates.length !== 0 ? dates.map(elem => {
+                                        return (<div style={{ color: 'white' }}>{elem}</div>)
+                                    }) : <div style={{ color: 'white' }}>no dates have been selected</div>
+                                }
+                            </div>
+                            <br />
+                            <button onClick={() => {
+
+                                dates.forEach(elem => {
+
+                                    
+
+                                    md.forEach(meal => {
+
+
+
+                                        fetch('http://localhost:8000/addmeals', {
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type': 'application/json',
+                                            },
+                                            body: JSON.stringify({ data: meal, userid: props.elem._id, mealdate: elem })
+                                        }).then(data => data.json()).then(data => {
+                                            if (data.success)
+                                                fetchdata();
+
+                                        })
+
+
+
+
+                                    })
+
+
+                                })
+
+                                pushDate(prev=>{return []});
+
+
+                            }} className="btn btn-primary">copy meals</button>
+
                         </div>
-                        
-                        </div>
-                       
+
                     </div>
 
 
