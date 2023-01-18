@@ -1,0 +1,124 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+table {
+  width: 100%;
+  background-color: white;
+}
+
+td,
+th {
+
+  padding: 8px;
+}
+
+.table>:not(caption)>*>* {
+  padding: 0.5rem 0.5rem;
+  background-color: var(--bs-table-bg);
+  border-bottom-width: 0px;
+  box-shadow: inset 0 0 0 9999px var(--bs-table-accent-bg);
+}
+
+
+
+#link {
+  color: rgb(119, 119, 220);
+  font-weight: 800;
+}
+
+#link:hover {
+  color: black;
+  cursor: pointer;
+
+}
+
+body {
+  background-image: linear-gradient(to bottom right, black, rgb(39, 39, 60), orange);
+}
+
+#piyush {
+  width:405px;
+  border-radius:10rem;
+}
+
+#container{
+  display: flex;
+  flex-direction: row;
+}
+
+.landing-text{
+  width: 65%;
+  
+}
+
+#jn{
+  background: none;
+  border: solid white 2px;
+  font-weight: bolder;
+  color: white;
+  margin-top: 2rem;
+  padding: 1rem 3rem;
+  border-radius: 1rem
+}
+
+#jn:hover{
+  background-color: white;
+  color: black;
+}
+
+
+@media only screen and (max-width: 700px) {
+
+  #container{
+    
+    flex-direction: column-reverse;
+    text-align: center;
+  }
+
+  .landing-text{
+    width: 100%;
+    text-align: center;
+  }
+  #piyush {
+    width:250px;
+    border-radius: 5rem;
+    margin-top: 2rem;
+  }
+}
