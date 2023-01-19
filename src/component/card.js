@@ -19,6 +19,7 @@ export default function Card(props) {
     const [datex, pushDatex] = useState([]);
 
     const [md, setmd] = useState([]);
+    const [ed, seted] = useState([]);
 
 
 
@@ -36,10 +37,24 @@ export default function Card(props) {
 
     }, [dates])
 
+    useEffect(() => {
+        if (datex.length == 1) {
+            seted(prev => {
+                let temp = [];
+                exercises.map(elem => {
+                    temp.push(elem.allexercises);
+                })
+
+                return temp;
+            })
+        }
+
+    }, [datex])
+
 
     console.log(props.elem)
-    console.log(dates)
-    
+    console.log(exercises)
+
 
     useEffect(() => {
         if (torf) {
@@ -194,32 +209,36 @@ export default function Card(props) {
 
 
     return (
-        <div id="ted" style={{ background: 'linear-gradient(to bottom right,skyblue, grey,black' }} >
+        <div id="ted" style={{ background: 'white',height:'80vh',overflow:'scroll' }} >
 
 
 
 
 
-            <div id={`menu-${props.elem._id}`} style={{ minHeight: '90vh', border: 'solid', marginBottom: '1rem', textAlign: 'center', display: 'none' }}>
+            <div id={`menu-${props.elem._id}`} style={{ minHeight: '90vh', border: 'solid', marginBottom: '1rem', display: 'none' }}>
+
+                <div style={{ background: "linear-gradient(to Right,black,gold)" }}> <div style={{ padding: '1rem 0', textAlign: 'center' }}><button onClick={() => { togglediet(prev => !prev); toggleex(prev => { if (prev) return !prev }) }} type="button" className="btn btn-dark">Diet</button>
+                    <button style={{ marginLeft: '1rem' }} onClick={() => { toggleex(prev => !prev); togglediet(prev => { if (prev) return !prev }) }} type="button" className="btn btn-dark">Exercise</button></div></div>
 
 
-                <div style={{ padding: '1rem 0' }}><button onClick={() => { togglediet(prev => !prev); toggleex(prev => { if (prev) return !prev }) }} type="button" className="btn btn-dark">Diet</button>
-                    <button style={{ marginLeft: '1rem' }} onClick={() => { toggleex(prev => !prev); togglediet(prev => { if (prev) return !prev }) }} type="button" className="btn btn-dark">Exercise</button></div>
-
-                <div id={`menu-${props.elem._id}-diet`} style={{ width: '80%', display: 'flex', margin: '0 auto', marginBottom: '10rem', display: 'flex', flexDirection: 'column' }}>
+                <div id={`menu-${props.elem._id}-diet`} style={{ padding:'0 10%', display: 'flex', margin: '0 auto', marginBottom: '10rem', display: 'flex', flexDirection: 'column' }}>
 
 
-                    <div style={{ fontSize: '2.5rem', margin: '1rem 0' }}>Make Diet Plan</div>
+                    <div style={{ fontSize: '1.5rem', margin: '1rem 0', fontFamily: 'sans-serif', fontWeight: 'bolder' }}>Make Diet Plan</div>
                     <form >
-                        <div id="whatdate" onChange={(e) => { dc(e.target.value) }} style={{}}><input type="date" /></div>
+                        <label htmlFor="whatdate">Select Date</label>
+                        <div id="whatdate" onChange={(e) => { dc(e.target.value) }} style={{}}><input type="date" style={{ fontSize: '1.25rem' }} /></div>
+                        <br />
                         <div className="form-group">
-                            <label className="ms-1" htmlFor="formGroupExampleInput">Meal Title</label>
+                            <label className="ms-1" htmlFor="formGroupExampleInput">Meal Time</label>
                             <input type="text" onChange={handlechange} name='title' className="form-control" id="formGroupExampleInput" placeholder="Example input" minLength={3} />
                         </div>
+                        <br />
                         <div className="form-group">
                             <label className="ms-1" htmlFor="formGroupExampleInput2">Meal Content</label>
                             <input type="text" onChange={handlechange} name="content" className="form-control" id="formGroupExampleInput2" placeholder="Another input" minLength={5} />
                         </div>
+                        <br />
                         <button onClick={handlesubmit} type="button" className="btn btn-primary mt-2">Add</button>
 
                     </form>
@@ -234,7 +253,7 @@ export default function Card(props) {
 
 
 
-                        <div style={{ maxHeight: '250px', width: '100%', overflow: 'auto', paddingTop: '1.5rem' }} >
+                        <div style={{ maxHeight: '250px', width: '100%', overflow: 'auto', paddingTop: '1.5rem',marginBottom:'1rem' }} >
 
 
 
@@ -266,25 +285,33 @@ export default function Card(props) {
 
                         </div>
 
-                        <div><br />
+                        <div ><br />
                             Same plan for other dates ?
                             select dates
 
-                            <input size={5} type="date" onChange={(e) => cd(prev => {
-                                return e.target.value;
-                            })} />
+                            <br />
+                            <div style={{marginBottom:'1rem'}}>
+                                <input style={{ marginRight: '2rem' }} size={5} type="date" onChange={(e) => cd(prev => {
+                                    return e.target.value;
+                                })} />
+                                {`   `}
+                                <button onClick={() => pushDate(prev => {
+                                    return [...prev, date]
+                                })}>push this date</button>
 
-                            <button onClick={() => pushDate(prev => {
-                                return [...prev, date]
-                            })}>push this date</button>
+                            </div>
 
 
 
-                            <div style={{ background: 'black' }}>
+
+
+
+
+                            <div style={{ background: 'white',width:'fit-content',padding:'0 1rem',border:'solid', display: 'flex', flexDirection: 'column' }}>
                                 {
                                     dates.length !== 0 ? dates.map(elem => {
-                                        return (<div style={{ color: 'white' }}>{elem}</div>)
-                                    }) : <div style={{ color: 'white' }}>no dates have been selected</div>
+                                        return (<div style={{  display: 'inline-block' }}>{elem}</div>)
+                                    }) : <div >no dates have been selected</div>
                                 }
                             </div>
                             <br />
@@ -292,11 +319,11 @@ export default function Card(props) {
 
                                 dates.forEach(elem => {
 
-                                    
+
 
                                     md.forEach(meal => {
 
-
+                                        console.log(meal)
 
                                         fetch('http://localhost:8000/addmeals', {
                                             method: 'POST',
@@ -318,7 +345,7 @@ export default function Card(props) {
 
                                 })
 
-                                pushDate(prev=>{return []});
+                                pushDate(prev => { return [] });
 
 
                             }} className="btn btn-primary">copy meals</button>
@@ -339,11 +366,14 @@ export default function Card(props) {
                             <label className="ms-1" htmlFor="formGroupExampleInput">Exercise Name</label>
                             <input type="text" onChange={handlechangeex} name='exname' className="form-control" id="formGroupExampleInput" placeholder="Example input" />
                         </div>
+                        <br />
                         <div className="form-group">
                             <label className="ms-1" htmlFor="formGroupExampleInput2">Set</label>
                             <input type="number" onChange={handlechangeex} name="set" className="form-control" id="formGroupExampleInput2" placeholder="Another input" />
                         </div>
-                        <button onClick={handlesubmitex} type="button" className="btn btn-primary mt-2">Add</button>
+                        <br />
+                        <button  onClick={handlesubmitex} type="button" className="btn btn-primary mt-2 mb-2">Add</button>
+                        
 
                     </form>
 
@@ -352,10 +382,8 @@ export default function Card(props) {
 
 
                     <div className="mt-2 dropdown">
-                        <button>
-                            All Exercise
-                        </button>
-                        <ul style={{ maxHeight: '250px', width: '100%', overflow: 'auto' }} >
+                        
+                        <ul style={{ paddingLeft:'0',maxHeight: '250px', width: '100%', overflow: 'auto' }} >
                             <ol className="list-group list-group-numbered">
 
 
@@ -372,6 +400,68 @@ export default function Card(props) {
                             </ol>
                         </ul>
                     </div>
+                    <div ><br />
+                            Same plan for other dates ?
+                            select dates
+
+                            <br />
+                            <div style={{marginBottom:'1rem'}}>
+                                <input style={{ marginRight: '2rem' }} size={5} type="date" onChange={(e) => cd(prev => {
+                                    return e.target.value;
+                                })} />
+                                
+                                <button onClick={() => pushDatex(prev => {
+                                    return [...prev, date]
+                                })}>push this date</button>
+
+                            </div>
+
+
+
+
+
+
+
+                            <div style={{ background: 'white',width:'fit-content',padding:'0 1rem',border:'solid', display: 'flex', flexDirection: 'column' }}>
+                                {
+                                    datex.length !== 0 ? datex.map(elem => {
+                                        return (<div style={{  display: 'inline-block' }}>{elem}</div>)
+                                    }) : <div >no dates have been selected</div>
+                                }
+                            </div>
+                            <br />
+                            <button onClick={() => {
+
+                                datex.forEach(elem => {
+
+
+
+                                    ed.forEach(meal => {
+
+                                        console.log(meal)
+
+                                        fetch('http://localhost:8000/addexercise', {
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type': 'application/json',
+                                            },
+                                            body: JSON.stringify({ data: meal, userid: props.elem._id, mealdate: elem })
+                                        }).then(data => data.json())
+
+
+
+
+                                    })
+
+
+                                })
+
+                                pushDatex(prev => { return [] });
+
+
+                            }} className="btn btn-primary">copy exercises</button>
+
+                        </div>
 
 
                 </div>
